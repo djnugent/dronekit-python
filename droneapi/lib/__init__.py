@@ -466,7 +466,7 @@ class Vehicle(HasObservers):
         Gets the ``system_status`` value from the most recently received `heartbeat <https://pixhawk.ethz.ch/mavlink/#HEARTBEAT>`_ message.
 
         This attribute provides high-level information about whether the vehicle is on the ground, flying, in failsafe, etc. For example,
-        you can check if the vehicle is in a critical state as shown:
+        to check if the vehicle is in a critical state:
 
         .. code:: python
 
@@ -475,6 +475,13 @@ class Vehicle(HasObservers):
 
             if v.system_status == mavutil.mavlink.MAV_STATE_CRITICAL:
                 print "DON'T PANIC!"
+
+        If printed, the attribute returns a human-readable string containing both the ``MAV_STATE`` enum name and a description. For example:
+
+        .. code:: bash
+
+           [MAV_STATE_STANDBY]: System is grounded and on standby. It can be launched any time.
+ 
 
         The possible values of the status are defined in the `MAV_STATE <https://pixhawk.ethz.ch/mavlink/>`_ enum (reproduced below).
 
@@ -510,6 +517,11 @@ class Vehicle(HasObservers):
            * - 7
              - ``MAV_STATE_POWEROFF``
              - System just initialized its power-down sequence and will shut down now.
+
+
+        .. note:: 
+
+            This attribute is of type :py:class:`SystemStatus <droneapi.lib.SystemStatus>`.
 
 
 
@@ -998,15 +1010,11 @@ class CommandSequence(object):
 
 class SystemStatus(object):
     """
-    A simple way to work with MAV_STATE messages
+    A convenience class (transparently) used by :py:func:`Vehicle.system_status <droneapi.lib.Vehicle.system_status>` for working with ``MAV_STATE`` messages.
 
-    Supported properties:
+    The class provides a human readable string for the system state when ``Vehicle.system_status`` is printed, and an enum value otherwise (for comparison).
 
-    ============= ======================================
-    Name          Description
-    ============= ======================================
-    mav_state     int
-    ============= ======================================
+    :param int mav_state: The current system ``MAV_STATE`` enum.
 
     """
     STATES = {
